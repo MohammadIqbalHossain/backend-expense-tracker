@@ -22,6 +22,10 @@ connectDB();
 app.use('/api/expenses', require('./routes/expenses'));
 app.use('/api/limits', require('./routes/limits'));
 
+app.use('/', (req, res) => {
+  res.send(`Server running on the ${PORT}`)
+})
+
 
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
