@@ -25,7 +25,7 @@ app.use(cors({
   maxAge: 86400 
 }));
 
-// This middleware removes unnecessery trailing slaces.
+// This middleware removes unnecessery trailing slashces.
 app.use((req, res, next) => {
   if (req.path.slice(-1) === '/' && req.path.length > 1) {
     const query = req.url.slice(req.path.length);
