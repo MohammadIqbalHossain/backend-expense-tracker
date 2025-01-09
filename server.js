@@ -8,7 +8,29 @@ const app = express();
 
 app.use(express.json());
 
+// app.use(cors());
 
+// app.use(cors({
+//   origin:  'http://localhost:3000',
+//   credentials: true,
+//   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
+// }));
+
+
+// app.use(cors({
+//   origin: function(origin, callback) {
+//     // Allow requests with no origin (like mobile apps or curl requests)
+//     if (!origin) return callback(null, true);
+    
+//     if (allowedOrigins.indexOf(origin) === -1) {
+//       const msg = 'The CORS policy for this site does not allow access from the specified Origin.';
+//       return callback(new Error(msg), false);
+//     }
+//     return callback(null, true);
+//   },
+//   credentials: true,
+//   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
+// }));
 
 const isDevelopment = process.env.NODE_ENV === 'development';
 console.log('Environment:', process.env.NODE_ENV);
@@ -18,9 +40,16 @@ const allowedOrigins = [
   'https://expense-tracker-beta-kohl.vercel.app'
 ];
 
+app.use((req, res, next) => {
+  console.log('Incoming request from origin:', req.headers.origin);
+  next();
+});
+
 app.use(cors({
   origin: function(origin, callback) {
     console.log('Request origin:', origin);
+    
+    // Allow requests with no origin (like Postman)
     if (!origin) {
       return callback(null, true);
     }
@@ -36,6 +65,14 @@ app.use(cors({
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
 }));
 
+
+app.get('/api/test-cors', (req, res) => {
+  res.json({
+    message: 'CORS is working',
+    origin: req.headers.origin,
+    env: process.env.NODE_ENV
+  });
+});
 
 
 
