@@ -5,14 +5,38 @@ require('dotenv').config();
 
 const app = express();
 
-// app.use(cors());
+
 app.use(express.json());
 
+
+
+const isDevelopment = process.env.NODE_ENV === 'development';
+console.log('Environment:', process.env.NODE_ENV);
+
+const allowedOrigins = [
+  'http://localhost:3000',
+  'https://expense-tracker-beta-kohl.vercel.app'
+];
+
 app.use(cors({
-  origin: 'https://new-expense-tracker-backend.vercel.app',
+  origin: function(origin, callback) {
+    console.log('Request origin:', origin);
+    if (!origin) {
+      return callback(null, true);
+    }
+
+    if (allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    }
+
+    console.log('Origin not allowed:', origin);
+    callback(new Error('Not allowed by CORS'));
+  },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
 }));
+
+
 
 
 //Connection to MongoDB atlas.
