@@ -4,41 +4,39 @@ const connectDB = require('./config/db');
 require('dotenv').config();
 
 const app = express();
-
-
 app.use(express.json());
-
 
 const isDevelopment = process.env.NODE_ENV === 'development';
 console.log('Environment:', process.env.NODE_ENV);
 
 const allowedOrigins = [
   'http://localhost:3000',
-  'https://expense-tracker-beta-kohl.vercel.app'
+  'https://expense-tracker-beta-kohl.vercel.app',
+  'https://expense-tracker-beta-kohl.vercel.app/'
 ];
 
-
+// Updating the cors confifgs to resolve cors error.
 app.use(cors({
-  origin: function(origin, callback) {
-    console.log('Request origin:', origin);
-    
-    // Allow requests with no origin (like Postman)
-    if (!origin) {
-      return callback(null, true);
-    }
-
-    if (allowedOrigins.includes(origin)) {
-      return callback(null, true);
-    }
-
-    console.log('Origin not allowed:', origin);
-    callback(new Error('Not allowed by CORS'));
-  },
+  origin: allowedOrigins,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  exposedHeaders: ['Content-Range', 'X-Content-Range'],
+  maxAge: 86400 
 }));
 
+// This middleware removes unnecessery trailing slaces.
+app.use((req, res, next) => {
+  if (req.path.slice(-1) === '/' && req.path.length > 1) {
+    const query = req.url.slice(req.path.length);
+    const safePath = req.path.slice(0, -1).replace(/\/+/g, '/');
+    res.redirect(301, safePath + query);
+  } else {
+    next();
+  }
+});
 
+// Test route
 app.get('/api/test-cors', (req, res) => {
   res.json({
     message: 'CORS is working',
@@ -47,8 +45,6 @@ app.get('/api/test-cors', (req, res) => {
   });
 });
 
-
-
 //Connection to MongoDB atlas.
 connectDB();
 
@@ -56,20 +52,8 @@ connectDB();
 app.use('/api/expenses', require('./routes/expenses'));
 app.use('/api/limits', require('./routes/limits'));
 
-// app.use((req, res, next) => {
-//   console.log('Incoming request from origin:', req.headers.origin);
-//   next();
-// });
-
-
-app.use('/', (req, res) => {
-  res.send(`Server running on the ${PORT}`)
-})
-
-
+//Showing PORT connection message!
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
-
-
