@@ -56,10 +56,10 @@ connectDB();
 app.use('/api/expenses', require('./routes/expenses'));
 app.use('/api/limits', require('./routes/limits'));
 
-app.use((req, res, next) => {
-  console.log('Incoming request from origin:', req.headers.origin);
-  next();
-});
+// app.use((req, res, next) => {
+//   console.log('Incoming request from origin:', req.headers.origin);
+//   next();
+// });
 
 
 app.use('/', (req, res) => {
