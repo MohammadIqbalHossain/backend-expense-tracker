@@ -10,11 +10,11 @@ app.use(express.json());
 
 // app.use(cors());
 
-app.use(cors({
-  origin:  ['http://localhost:3000', 'https://expense-tracker-beta-kohl.vercel.app', 'localhost/:1'],
-  credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
-}));
+// app.use(cors({
+//   origin:  ['http://localhost:3000', 'https://expense-tracker-beta-kohl.vercel.app', 'localhost/:1'],
+//   credentials: true,
+//   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
+// }));
 
 
 // app.use(cors({
@@ -34,38 +34,38 @@ app.use(cors({
 
 
 
-// const isDevelopment = process.env.NODE_ENV === 'development';
-// console.log('Environment:', process.env.NODE_ENV);
+const isDevelopment = process.env.NODE_ENV === 'development';
+console.log('Environment:', process.env.NODE_ENV);
 
-// const allowedOrigins = [
-//   'http://localhost:3000',
-//   'https://expense-tracker-beta-kohl.vercel.app'
-// ];
+const allowedOrigins = [
+  'http://localhost:3000',
+  'https://expense-tracker-beta-kohl.vercel.app'
+];
 
-// app.use((req, res, next) => {
-//   console.log('Incoming request from origin:', req.headers.origin);
-//   next();
-// });
+app.use((req, res, next) => {
+  console.log('Incoming request from origin:', req.headers.origin);
+  next();
+});
 
-// app.use(cors({
-//   origin: function(origin, callback) {
-//     console.log('Request origin:', origin);
+app.use(cors({
+  origin: function(origin, callback) {
+    console.log('Request origin:', origin);
     
-//     // Allow requests with no origin (like Postman)
-//     if (!origin) {
-//       return callback(null, true);
-//     }
+    // Allow requests with no origin (like Postman)
+    if (!origin) {
+      return callback(null, true);
+    }
 
-//     if (allowedOrigins.includes(origin)) {
-//       return callback(null, true);
-//     }
+    if (allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    }
 
-//     console.log('Origin not allowed:', origin);
-//     callback(new Error('Not allowed by CORS'));
-//   },
-//   credentials: true,
-//   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
-// }));
+    console.log('Origin not allowed:', origin);
+    callback(new Error('Not allowed by CORS'));
+  },
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
+}));
 
 
 app.get('/api/test-cors', (req, res) => {
