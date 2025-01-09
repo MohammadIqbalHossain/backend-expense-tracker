@@ -11,7 +11,7 @@ app.use(express.json());
 // app.use(cors());
 
 app.use(cors({
-  origin:  ['http://localhost:3000', 'https://expense-tracker-beta-kohl.vercel.app'],
+  origin:  ['http://localhost:3000', 'https://expense-tracker-beta-kohl.vercel.app', 'localhost/:1'],
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
 }));
